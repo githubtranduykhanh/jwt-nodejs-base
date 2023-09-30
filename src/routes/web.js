@@ -3,12 +3,11 @@
  */
 
 import express from "express";
+import homepageController from "../controllers/homepageController";
 const router = express.Router();
 
 const initWebRoutes = (app) => {
-    router.get('/', (req,res) => {
-        return res.send("Hello word !!")
-    });
+    router.get('/', homepageController.getHomepage);
     
     return app.use('/', router);
 };
