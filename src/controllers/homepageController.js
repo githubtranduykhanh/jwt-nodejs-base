@@ -22,9 +22,31 @@ const postUsersDelete = async (req, res) => {
         return res.redirect("/");
     }  
 }
+const getUsersUpdateById = async (req, res) => {
+    console.log(">>>> check user by id:",req.params);
+    let userUptade = {};
+    const arrUser = await userService.getUserById(req.params.id);
+    if(arrUser && arrUser.length > 0){
+        userUptade  = arrUser[0];
+        return res.render('user-update.ejs',{userUptade})
+    }else{
+        return res.render('user-update.ejs',{userUptade})
+    } 
+}
 
+const postUsersUpdate = async (req, res) => {
+    console.log(">>>> check update body:",req.body);
+    const isUpdateUser = await userService.updateUser(req.body.email,req.body.name,req.body.id);
+    if(isUpdateUser){
+        return res.redirect("/");
+    }else{
+        return res.redirect("/");
+    }  
+}
 module.exports = {
     getHomepage,
     postUsersCreate,
-    postUsersDelete
+    postUsersDelete,
+    getUsersUpdateById,
+    postUsersUpdate
 }

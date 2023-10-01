@@ -53,8 +53,7 @@
                   <form method="POST" action="/users/delete/<%=item.id %>" style="display: inline;">
                     <button type="submit" class="btn btn-danger">Delete</button>
                   </form>
-                  
-                  <button type="button" class="btn btn-warning">Edit</button>
+                  <a href="/users/update/<%=item.id %>" class="btn btn-warning">Edit</a>
                 </td>
               </tr>  
           <%})} %>         
