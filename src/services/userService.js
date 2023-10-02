@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import mysql from 'mysql2/promise';
 import bluebird from 'bluebird';
+import db from '../models';
 const saltRounds = 10;
 
 const hashUserPassword = (myPlaintextPassword) => {
@@ -19,63 +20,62 @@ const hashUserPassword = (myPlaintextPassword) => {
 
 const createUser = async (username,email,password) => {
     let hashPassword = await hashUserPassword(password);
-    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'jwt_nodejs_reactjs_mysql', Promise: bluebird});
     try {
-        const [rows, fields] = await connection.execute('INSERT INTO user (email, password, username) VALUES (?, ?, ?)', [email, hashPassword , username]);
-        console.log(">>> check rows",rows);  
+        const resData = await db.User.create({ username,email,password:hashPassword });
+        console.log(">>> check resData",resData);  
         return true;
     } catch (error) {
-        console.log(">>> check rows error",error);   
+        console.log(">>> check resData error",error);   
         return false; 
-    }  
+    }
 }
 
 const getListUser = async () => {
-    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'jwt_nodejs_reactjs_mysql', Promise: bluebird});
     try {
-        const [rows, fields] = await connection.execute('SELECT * FROM user');
-        console.log(">>> check rows",rows);
-        return rows;
+        const users = await db.User.findAll();
+        console.log(">>> check users",users);
+        return users;
     } catch (error) {
         console.log(">>> check rows error",error);
         return [];
-    }    
+    }
 }
 const deleteUser = async (id) => {
-    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'jwt_nodejs_reactjs_mysql', Promise: bluebird});
     try {
-        const [rows, fields] = await connection.execute('DELETE FROM user WHERE id=?',[id]);
-        console.log(">>> check rows",id);
+        await db.User.destroy({
+            where: {
+                id
+            }
+        });
+        console.log(">>> check id delete",id);
         return true;
     } catch (error) {
-        console.log(">>> check rows error",error);
+        console.log(">>> check delete error",error);
         return false;
-    }    
+    }  
 }
 const getUserById = async (id) => {
-    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'jwt_nodejs_reactjs_mysql', Promise: bluebird});
     try {
-        const [rows, fields] = await connection.execute('SELECT * FROM user WHERE id=?',[id]);
-        console.log(">>> check rows",id);
-        return rows;
+        const user = await db.User.findOne({where: { id }});
+        console.log(">>> check user by id ",user.get({ plain:true}));
+        return user.get({ plain:true});
     } catch (error) {
-        console.log(">>> check rows error",error);
-        return [];
-    }    
+        console.log(">>> check user by id error",error);
+        return {};
+    }  
 }
 const updateUser = async (email,username,id) => {
     console.log(">>> check email",email); 
     console.log(">>> check username",username); 
     console.log(">>> check id",id); 
-    const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'jwt_nodejs_reactjs_mysql', Promise: bluebird});
     try {
-        const [rows, fields] = await connection.execute('UPDATE user SET email = ?, username = ? WHERE id = ?',[email,username,id]);
-        console.log(">>> check rows",rows); 
+        await db.User.update({ email,username }, { where: { id }});
+        console.log(">>> check update");
         return true;
     } catch (error) {
-        console.log(">>> check rows error",error);
+        console.log(">>> check update error",error);
         return false;
-    }    
+    }
 }
 
 

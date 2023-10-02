@@ -25,9 +25,8 @@ const postUsersDelete = async (req, res) => {
 const getUsersUpdateById = async (req, res) => {
     console.log(">>>> check user by id:",req.params);
     let userUptade = {};
-    const arrUser = await userService.getUserById(req.params.id);
-    if(arrUser && arrUser.length > 0){
-        userUptade  = arrUser[0];
+    userUptade = await userService.getUserById(req.params.id);
+    if(userUptade){
         return res.render('user-update.ejs',{userUptade})
     }else{
         return res.render('user-update.ejs',{userUptade})
