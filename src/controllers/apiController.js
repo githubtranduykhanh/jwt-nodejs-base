@@ -5,6 +5,15 @@ const testApi = (req, res) => {
     })
 }
 
+const handlRegister = (req, res) => {
+    console.log(">>>>check data server:",req.body)
+    return res.status(200).json({
+        message:"Register",
+        data:"test api"
+    })
+}
+
 export default {
-    testApi
+    testApi,
+    handlRegister
 };

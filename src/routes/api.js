@@ -8,7 +8,7 @@ const router = express.Router();
 
 const initApiRoutes = (app) => {
     router.get('/', apiController.testApi);
-      
+    router.post('/register', apiController.handlRegister);
     return app.use('/api/v1', router);
 };
 
