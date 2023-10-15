@@ -1,7 +1,8 @@
-import bcrypt from 'bcryptjs';
+
 import mysql from 'mysql2/promise';
 import bluebird from 'bluebird';
 import db from '../models';
+import bcrypt from 'bcryptjs';
 const saltRounds = 10;
 
 const hashUserPassword = (myPlaintextPassword) => {
