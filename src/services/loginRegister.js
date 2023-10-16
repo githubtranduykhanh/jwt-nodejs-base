@@ -9,7 +9,6 @@ const hashUserPassword = (myPlaintextPassword) => {
 
 const checkEmail = async (email) => {
     const user = await db.User.findOne({ where: { email } })
-    console.log(">>>checkEmail",user)
     if(user){
         return true
     }
@@ -18,7 +17,6 @@ const checkEmail = async (email) => {
 
 const checkPhone = async (phone) => {
     const user = await db.User.findOne({ where: { phone } })
-    console.log(">>>checkPhone",user)
     if(user){
         return true
     }
@@ -30,20 +28,26 @@ export const registerNewUser = async ({ username, email, phone, password }) => {
     try {
         const isEmail = await checkEmail(email)
         const isPhone = await checkPhone(phone)
-        console.log(">>>checkEmailRegisterNewUser",isEmail)
-        console.log(">>>checkPhoneRegisterNewUser",isPhone)
 
-        if(isEmail || isPhone){
+        if(isEmail){
             return {
-                EM:"The phone or email is already exist",
+                EM:"The email is already exist",
                 EC:"1",
             }
         }
-        console.log(">>>check isEmail isPhone")
+
+        if(isPhone){
+            return {
+                EM:"The phone is already exist",
+                EC:"1",
+            }
+        }
+
+        
         const hashPassword = hashUserPassword(password)
-        console.log(">>>check hash Password")
+        
         await db.User.create({ username,email,phone,password:hashPassword });
-        console.log(">>>check create successfully")
+        
         return {
             EM:"A user is created successfully !",
             EC:"0",

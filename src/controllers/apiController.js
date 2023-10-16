@@ -34,8 +34,15 @@ const handlRegister = async (req, res) => {
         })
     }
 }
-
+const handlLogin = (req, res) =>{
+    console.log(">>>check handlLogin:",req.body)
+    return res.status(200).json({
+        EM: 'login oke',
+        EC: '0',
+    })
+}
 export default {
     testApi,
-    handlRegister
+    handlRegister,
+    handlLogin
 };
