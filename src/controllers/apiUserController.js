@@ -1,0 +1,22 @@
+import {getListUser} from '../services/apiUserService'
+const listUser = async (req, res) =>{
+    try {
+        console.log(">>>check listUser")
+        const data = await getListUser();
+        return res.status(200).json({
+            EM:data.EM,
+            EC:data.EC,
+            DT:data.DT
+        })
+    } catch (error) {
+        return res.status(500).json({
+            EM:"error from server",
+            EC:"-1",
+            DT:''
+        })
+    } 
+}
+
+export default {
+    listUser
+}

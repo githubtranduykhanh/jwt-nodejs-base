@@ -1,4 +1,4 @@
-import { registerNewUser,loginUser } from "../services/loginRegister"
+import { registerNewUser,loginUser } from "../services/apiLoginRegisterService"
 const testApi = (req, res) => {
     return res.status(200).json({
         message:"ok",
@@ -50,8 +50,11 @@ const handlLogin = async (req, res) =>{
     }
     
 }
+
+
+
 export default {
     testApi,
     handlRegister,
-    handlLogin
+    handlLogin,
 };
