@@ -19,15 +19,30 @@ const hashUserPassword = (myPlaintextPassword) => {
     })
 }
 
-const createUser = async (username,email,password) => {
+const createUser = async ({username,email,password}) => {
     let hashPassword = await hashUserPassword(password);
     try {
         const resData = await db.User.create({ username,email,password:hashPassword });
         console.log(">>> check resData",resData);  
-        return true;
+        if(resData){
+            return {
+                EM:"A create user successfully !",
+                EC:"0",
+                DT:''
+            }
+        }
+        return {
+            EM:"The create user exist",
+            EC:"1",
+            DT:''
+        };
     } catch (error) {
-        console.log(">>> check resData error",error);   
-        return false; 
+        console.log(">>> check create error",error);   
+        return {
+            EM:"Somthing wrongs in service...",
+            EC:"-2",
+            DT:''
+        }
     }
 }
 
@@ -56,41 +71,120 @@ const getListUser = async () => {
         }
     }
 }
+
+const getListUserPageLimit = async (page,limit) => {
+    try {
+        const offset = (page - 1) * limit
+        const { count, rows } = await db.User.findAndCountAll({
+            attributes: ['id','email', 'username'],
+            offset,
+            limit
+        });
+        console.log(">>> check count ",rows);
+        console.log(">>> check rows ",rows);
+        const totalPages = Math.ceil(count/limit)
+        const data = {
+            totalRows:count,
+            totalPages,
+            users:rows
+        }
+        
+        return {
+            EM:"A get list user successfully !",
+            EC:"0",
+            DT:data
+        }
+        
+    } catch (error) {
+        console(">>>Error loginUser:",error)
+        return {
+            EM:"Somthing wrongs in service...",
+            EC:"-2",
+            DT:''
+        }
+    }
+}
+
 const deleteUser = async (id) => {
     try {
-        await db.User.destroy({
+        const user = await db.User.destroy({
             where: {
                 id
             }
         });
-        console.log(">>> check id delete",id);
-        return true;
+        console.log(">>> check id delete",user);
+        if(user === 1){
+            return {
+                EM:"A delete user successfully !",
+                EC:"0",
+                DT:''
+            }
+        }
+        return {
+            EM:"The delete user exist",
+            EC:"1",
+            DT:''
+        };
     } catch (error) {
         console.log(">>> check delete error",error);
-        return false;
+        return {
+            EM:"Somthing wrongs in service...",
+            EC:"-2",
+            DT:''
+        }
     }  
 }
 const getUserById = async (id) => {
     try {
         const user = await db.User.findOne({where: { id }});
         console.log(">>> check user by id ",user.get({ plain:true}));
-        return user.get({ plain:true});
+        if(user){
+            return {
+                EM:"A get user by id successfully !",
+                EC:"0",
+                DT:user.get({ plain:true})
+            }
+        }
+        return {
+            EM:"The get user by id  exist",
+            EC:"1",
+            DT:{}
+        };
     } catch (error) {
         console.log(">>> check user by id error",error);
-        return {};
+        return {
+            EM:"Somthing wrongs in service...",
+            EC:"-2",
+            DT:''
+        }
     }  
 }
-const updateUser = async (email,username,id) => {
+const updateUser = async ({email,username,id}) => {
     console.log(">>> check email",email); 
     console.log(">>> check username",username); 
     console.log(">>> check id",id); 
     try {
-        await db.User.update({ email,username }, { where: { id }});
-        console.log(">>> check update");
-        return true;
+        const user = await db.User.update({ email,username }, { where: { id }});
+        console.log(">>> check update",user);
+        if(user){
+            return {
+                EM:"A update user successfully !",
+                EC:"0",
+                DT:''
+            }
+        }
+        return {
+            EM:"The update user  exist",
+            EC:"1",
+            DT:''
+        };
     } catch (error) {
         console.log(">>> check update error",error);
-        return false;
+        return {
+            EM:"Somthing wrongs in service...",
+            EC:"-2",
+            DT:''
+        }
     }
 }
 
@@ -100,5 +194,6 @@ module.exports = {
     deleteUser,
     getListUser,
     getUserById,
-    updateUser
+    updateUser,
+    getListUserPageLimit
 }
